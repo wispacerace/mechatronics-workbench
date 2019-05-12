@@ -4,9 +4,13 @@
 Testing splits up into a few areas (and strategies for those areas).
 
 * [Unit tests](#unit-tests)
+  * [Side-effects and unit testing](#side-effects-and-unit-testing)
+  * [Running on real hardware](#running-on-real-hardware)
+  * [How does this work with continuous integration?](#how-does-this-work-with-continuous-integration)
 * [Integration tests](#integration-tests)
+  * [Continuous integration](#continuous-integration)
 * [System tests](#system-tests)
-
+  * [Continuous integration?](#continuous-integration-1)
 
 # Unit tests
 **Unit tests** test a single unit (surprise) of functionality at a time. For instance, if I have the code
