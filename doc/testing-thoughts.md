@@ -1,5 +1,6 @@
 # Testing thoughts
 ## _Liam Marshall_, 12 May 2019
+_Found as both a pdf memo in Drive and as [a file on Github](https://github.com/wispacerace/testbench/blob/master/doc/testing-thoughts.md)._
 
 Testing splits up into a few areas (and strategies for those areas).
 
@@ -60,7 +61,8 @@ def flip_pin_state(pin):
 
 def test_flip_pin_state():
     logic_pin = MockLogicPin()
-    flip_pin_state(logic_pin) # note how we're passing in the dependency instead of it being a global
+    flip_pin_state(logic_pin) # note how we're passing in the dependency,
+                              # instead of it being a global
     assert logic_pin.state == True
 ```
 
@@ -88,6 +90,7 @@ This code would be compiled for the target devboard and uploaded; the result of 
 Continuous integration tools like [Travis CI](https://travis-ci.org/) watch your Git repository for changes and run your tests on every new commit; this has become increasingly integrated to the point that Github supports displaying test status on pull requests and preventing merges without tests passing.
 
 We want to at least run the build and make sure everything compiles, but in addition to that, there's some other possibilities:
+
 * Run unit tests on pure functions/suitably decoupled portions of the codebase.
 * Run unit tests with mocked hardware.
 * Run unit tests on physical hardware.
@@ -98,6 +101,7 @@ Cooperating with physical hardware requires that tests run on the workbench mach
 Integration tests attempt to validate modules and subsystems within the context they operate in. For example, ECU functionality would be tested by sending CAN commands and making sure the right outputs were asserted. Integration testing can be (somewhat) performed by mocking hardware but ideally would be performed physically, to make sure that subsystems communicate properly. For consistency, it's pretty common to replace some of the subsystems with accurate mocks so that it's possible to isolate issues to the unit under test.
 
 ## Continuous integration
+
 * Run integration tests on subsets of the codebase with mocked hardware.
 * Run integration tests on physical hardware (needs CAN injector/debugger hardware, testbenched I/O).
 
