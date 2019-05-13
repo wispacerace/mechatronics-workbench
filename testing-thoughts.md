@@ -37,7 +37,7 @@ fn flip_pin_state() {
 
 Now we have a problem. This function is not _pure_: it depends on external state, and, worse, messes with it. There's several ways you can test impure functions.
 
-One common method is _mocking_. Mocking would involve creating a "fake" `LOGIC_PIN` with known internal state and fake `get_state` and `set_state` getters/setters. You'd then run `flip_pin_state()` and assert that the internal state of the fake `LOGIC_PIN` was the expected value.
+One common method is _mocking_. Mocking involves creating a "fake" `LOGIC_PIN` with known internal state and fake `get_state` and `set_state` getters/setters. `flip_pin_state()` can be run and the internal state of the fake `LOGIC_PIN` checked.
 
 Mocking sometimes is very complicated (monkeypatching language internals to override, eg, class instantiation with mocked classes), but with sufficiently decoupled code, dependency-injection style (pass required things _into_ functions, instead of globals), it's quite a bit easier. Mocking is definitely harder in static languages and usually requires special tools; I'll thus demonstrate in a dynamic language:
 
@@ -102,7 +102,7 @@ Integration tests attempt to validate modules and subsystems within the context 
 * Run integration tests on physical hardware (needs CAN injector/debugger hardware, testbenched I/O).
 
 # System tests
-System tests test the rocket mechatronics with all subsystems active and networked (ECU, FCU, sensors, telemetry, etc). I/O will be checked/asserted in real time and CAN will be monitored. This is almost validation testing, just with more automation; due to the level of integration and the required runtime, these will be run with lower frequency than hardware unit or integration tests.
+System tests are run on rocket mechatronics with all subsystems active and networked (ECU, FCU, sensors, telemetry, etc). I/O will be checked/asserted in real time and CAN will be monitored. This is almost validation testing, just with more automation; due to the level of integration and the required runtime, these will be run with lower frequency than hardware unit or integration tests.
 
 ## Continuous integration?
 Not really. Tests would still be automated, though. Hardware setup would look a lot like continuous integration, just testing everything at once; for instance, the ECU and FCU would actually be talking as in the full rocket system, whereas ECU integration tests would pretend to be sending FCU commands.
