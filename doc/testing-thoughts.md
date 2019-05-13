@@ -39,7 +39,7 @@ Now we have a problem. This function is not _pure_: it depends on external state
 
 One common method is _mocking_. Mocking involves creating a "fake" `LOGIC_PIN` with known internal state and fake `get_state` and `set_state` getters/setters. `flip_pin_state()` can be run and the internal state of the fake `LOGIC_PIN` checked.
 
-Mocking sometimes is very complicated (monkeypatching language internals to override, eg, class instantiation with mocked classes), but with sufficiently decoupled code, dependency-injection style (pass required things _into_ functions, instead of globals), it's quite a bit easier. Mocking is definitely harder in static languages and usually requires special tools; I'll thus demonstrate in a dynamic language:
+Mocking sometimes is very complicated (monkeypatching language internals to override, eg, class instantiation with mocked classes), but with sufficiently decoupled code, dependency-injection style (pass required things _into_ functions, instead of globals), it's quite a bit easier. Mocking is definitely harder in compiled languages and usually requires special tools; instead, a demonstration in Python:
 
 ```py
 class ActualLogicPin:
@@ -56,7 +56,7 @@ class MockLogicPin:
         return self.state
 
 def flip_pin_state(pin):
-    pin.set_state(!pin.get_state())
+    pin.set_state(not pin.get_state())
 
 def test_flip_pin_state():
     logic_pin = MockLogicPin()
