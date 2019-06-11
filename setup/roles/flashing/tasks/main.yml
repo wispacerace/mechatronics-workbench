@@ -1,0 +1,17 @@
+- apt:
+    package: openocd=0.10.0-4
+    state: present
+  become: yes
+
+- template:
+    src: etc/udev/rules.d/99-openocd.rules
+    dest: /etc/udev/rules.d/99-openocd.rules
+    owner: root
+    group: root
+    mode: 0644
+  become: yes
+
+- user:
+    name: wisr
+    groups: plugdev
+    append: yes

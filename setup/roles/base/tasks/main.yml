@@ -1,0 +1,4 @@
+- apt:
+    package: ['neovim', 'aptitude']
+    state: present
+  become: yes

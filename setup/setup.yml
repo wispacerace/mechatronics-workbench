@@ -1,0 +1,4 @@
+- hosts: testbench
+  tasks:
+    - include_role: name=base
+    - include_role: name=flashing # openocd and friends
