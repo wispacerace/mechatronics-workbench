@@ -2,3 +2,11 @@
   tasks:
     - include_role: name=workbench-base
     - include_role: name=flashing # openocd and friends
+
+- hosts: jumpbox
+  tasks:
+    - import_role: name=buildbot-master
+      vars:
+        workers:
+          - name: testbench
+            password: "{{buildbot_passwords.testbench}}"

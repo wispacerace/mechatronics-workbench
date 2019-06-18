@@ -1,2 +1,11 @@
 [testbench]
 wisr-mechatronics-testbench.tunnel
+
+[jumpbox]
+jumpbox.wisc.space ansible_user=deploy
+
+
+# everything that needs to know buildbot secrets
+[buildbot]
+wisr-mechatronics-testbench.tunnel
+jumpbox.wisc.space
