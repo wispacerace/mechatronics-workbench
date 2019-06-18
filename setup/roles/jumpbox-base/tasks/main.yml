@@ -1,0 +1,62 @@
+- name: allow SSH connection to jumpbox
+  ufw:
+    rule: limit
+    port: ssh
+    proto: tcp
+  become: yes
+
+- name: allow reverse SSH connection from testbench
+  ufw:
+    rule: limit
+    port: '15675'
+    proto: tcp
+  become: yes
+
+- name: allow HTTP connections
+  ufw:
+    rule: allow
+    port: http
+    proto: tcp
+  become: yes
+
+- name: allow HTTPS connections
+  ufw:
+    rule: allow
+    port: https
+    proto: tcp
+  become: yes
+
+- name: allow Buildbot worker connections
+  ufw:
+    rule: allow
+    port: '9989'
+    proto: tcp
+  become: yes
+
+- name: turn on UFW
+  ufw:
+    state: enabled
+  become: yes
+
+- name: generate new dhparams (https://weakdh.org)
+  shell: openssl dhparam -out /etc/ssl/certs/dhparam.pem 2048
+  args:
+    creates: /etc/ssl/certs/dhparam.pem
+  become: yes
+
+- name: add certbot repository
+  apt_repository: repo=ppa:certbot/certbot
+  become: yes
+
+- name: install certbot
+  apt:
+    name: python-certbot
+    state: present
+    update_cache: yes
+  become: yes
+
+- name: mkdir /var/www/challenges
+  file:
+    path: /var/www/challenges
+    state: directory
+  become: yes

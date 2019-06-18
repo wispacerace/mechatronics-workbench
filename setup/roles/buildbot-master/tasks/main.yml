@@ -1,3 +1,5 @@
+#### DEPENDENCIES ####
+
 - apt:
     package:
       - python3
@@ -29,6 +31,8 @@
     state: forcereinstall
   become: yes
 
+#### SETUP BUILDBOT ####
+
 - user:
     name: buildmaster
     state: present
@@ -48,7 +52,8 @@
     group: buildmaster
   become: yes
 
-- template:
+- name: install buildbot-master service file
+  template:
     src: etc/systemd/system/buildbot-master.service
     dest: /etc/systemd/system/buildbot-master.service
     mode: 0644
@@ -56,9 +61,65 @@
     group: root
   become: yes
 
-- systemd:
+- name: start buildbot-master.service
+  systemd:
     name: buildbot-master
     daemon_reload: yes
     state: restarted
     enabled: yes
+  become: yes
+
+#### NGINX & CERTBOT ####
+
+- name: check if cert exists
+  stat:
+    path: /etc/letsencrypt/live/ci.wisc.space/fullchain.pem
+  register: certstat
+  become: yes
+
+- name: push http-only nginx config
+  template:
+    src: etc/nginx/sites-available/ci.wisc.space
+    dest: /etc/nginx/sites-available/ci.wisc.space
+    mode: 0644
+    owner: root
+    group: root
+  vars:
+    havecert: no
+  when: not certstat.stat.exists
+  become: yes
+
+- name: link nginx config into sites-enabled
+  file:
+    src: /etc/nginx/sites-available/ci.wisc.space
+    dest: /etc/nginx/sites-enabled/ci.wisc.space
+    owner: root
+    group: root
+    state: link
+  become: yes
+
+- service:
+    name: nginx
+    state: restarted
+  become: yes
+  when: not certstat.stat.exists
+
+- name: get certificate
+  shell: 'certbot certonly --non-interactive --agree-tos -m {{le_email}} --webroot -w /var/www/challenges -d ci.wisc.space'
+  become: yes
+  when: not certstat.stat.exists
+
+- template:
+    src: etc/nginx/sites-available/ci.wisc.space
+    dest: /etc/nginx/sites-available/ci.wisc.space
+    mode: 0644
+    owner: root
+    group: root
+  vars:
+    havecert: yes
+  become: yes
+
+- service:
+    name: nginx
+    state: restarted
   become: yes

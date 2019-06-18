@@ -1,10 +1,17 @@
 - hosts: testbench
   tasks:
-    - include_role: name=workbench-base
-    - include_role: name=flashing # openocd and friends
+    - import_role: name=workbench-base
+    - import_role: name=flashing # openocd and friends
+    - import_role: name=buildbot-worker
+      vars:
+        master_host: ci.wisc.space
+        master_port: 9989
+        worker_name: testbench
+        worker_password: "{{buildbot_passwords.testbench}}"
 
 - hosts: jumpbox
   tasks:
+    - import_role: name=jumpbox-base
     - import_role: name=buildbot-master
       vars:
         workers:
