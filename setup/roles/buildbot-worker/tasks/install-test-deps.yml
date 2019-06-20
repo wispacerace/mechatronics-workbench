@@ -1,0 +1,9 @@
+- name: install Rust for buildbot user
+  shell: "curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --default-toolchain stable"
+  become: yes
+  become_user: buildbot
+
+- name: add thumbv7em-none-eabihf target to Rust
+  shell: "~/.cargo/bin/rustup target add thumbv7em-none-eabihf"
+  become: yes
+  become_user: buildbot
