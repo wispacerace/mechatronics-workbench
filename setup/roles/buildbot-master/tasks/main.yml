@@ -1,6 +1,7 @@
 #### DEPENDENCIES ####
 
-- apt:
+- name: install base dependencies with apt
+  apt:
     package:
       - python3
       - python3-dev
@@ -13,7 +14,8 @@
     state: present
   become: yes
 
-- pip:
+- name: install python dependencies with pip3
+  pip:
     executable: pip3
     name:
       - buildbot[tls] # buildbot master
@@ -21,11 +23,13 @@
       - buildbot-waterfall-view
       - buildbot-console-view
       - buildbot-grid-view
+      - treq # for HTTP requests from within Twisted (for the Slack status plugin)
     state: present
     extra_args: '-U'
   become: yes
 
-- pip:
+- name: force reinstall of service_identity via pip3 to fix weird glitches
+  pip:
     executable: pip3
     name: service_identity
     state: forcereinstall
@@ -33,7 +37,8 @@
 
 #### SETUP BUILDBOT ####
 
-- user:
+- name: create a user for the buildmaster
+  user:
     name: buildmaster
     state: present
   become: yes
@@ -51,6 +56,16 @@
     owner: buildmaster
     group: buildmaster
   become: yes
+
+- name: copy buildbot config supporting files
+  template:
+    src: buildbot/{{item}}
+    dest: /home/buildmaster/basedir/{{item}}
+    owner: buildmaster
+    group: buildmaster
+  become: yes
+  with_items:
+    - slack.py
 
 - name: install buildbot-master service file
   template:
