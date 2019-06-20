@@ -5,7 +5,13 @@ wisr-mechatronics-testbench.tunnel
 jumpbox.wisc.space ansible_user=deploy
 
 
-# everything that needs to know buildbot secrets
+# everything that needs to know shared buildbot secrets (passwords)
 [buildbot]
 wisr-mechatronics-testbench.tunnel
 jumpbox.wisc.space
+
+[buildbot_master]
+jumpbox.wisc.space
+
+[buildbot_workers]
+wisr-mechatronics-testbench.tunnel
