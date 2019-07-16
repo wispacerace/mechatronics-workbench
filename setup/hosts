@@ -1,17 +1,13 @@
-[testbench]
-wisr-mechatronics-testbench.tunnel
-
-[jumpbox]
-jumpbox.wisc.space ansible_user=deploy
-
+testbench ansible_host=wisr-mechatronics-testbench.tunnel
+jumpbox ansible_host=jumpbox.wisc.space ansible_user=deploy
 
 # everything that needs to know shared buildbot secrets (passwords)
 [buildbot]
-wisr-mechatronics-testbench.tunnel
-jumpbox.wisc.space
+testbench
+jumpbox
 
 [buildbot_master]
-jumpbox.wisc.space
+jumpbox
 
 [buildbot_workers]
-wisr-mechatronics-testbench.tunnel
+testbench
