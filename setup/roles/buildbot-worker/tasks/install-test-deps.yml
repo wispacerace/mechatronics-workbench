@@ -31,4 +31,27 @@
     state: present
   become: yes
 
-# - name: 
+- name: check if arm gcc toolchain is already installed
+  stat:
+    path: /usr/local/arm-none-eabi
+  register: gcc_toolchain
+
+- name: download and unpack arm gcc toolchain
+  unarchive:
+    remote_src: yes
+    src: 'https://developer.arm.com/-/media/Files/downloads/gnu-rm/8-2019q3/RC1.1/gcc-arm-none-eabi-8-2019-q3-update-linux.tar.bz2'
+    dest: /tmp/
+  when: not gcc_toolchain.stat.exists
+
+- name: find the unpacked toolchain folder
+  find:
+    paths: /tmp
+    patterns: 'gcc-arm-none-eabi-*'
+    file_type: directory
+  register: found_toolchain
+  when: not gcc_toolchain.stat.exists
+
+- name: move toolchain files into /usr/local
+  shell: "rsync -rlD {{found_toolchain['files'][0]['path']}}/ /usr/local"
+  become: yes
+  when: not gcc_toolchain.stat.exists
